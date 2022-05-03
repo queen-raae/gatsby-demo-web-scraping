@@ -14,9 +14,10 @@
     "clean": "gatsby clean"
   },
   "dependencies": {
-    "@raae/gatsby-theme-queen": "^0.0.1",
-    "gatsby": "4.1.4",
-    "react": "17.0.2",
-    "react-dom": "17.0.2"
+    "@raae/gatsby-theme-queen": "^0.1.1",
+    "axios": "0.27.2",
+    "gatsby": "4.13.1",
+    "react": "18.1.0",
+    "react-dom": "18.1.0"
   }
 }
