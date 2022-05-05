@@ -8,12 +8,21 @@ const IndexPage = () => {
           <span role="img" aria-label="Red circle + women presenter emoji">
             🔴&nbsp;👩‍🏫&nbsp;
           </span>
-          Live Screencast Template
+          Web Scraping Demo
           <span role="img" aria-label="Women presenter + red circle emoji">
             &nbsp;👩‍🏫&nbsp;🔴
           </span>
         </h1>
-        <p>A template for Live Screencasts...</p>
+        <p>
+          Sourcing data into the Gatsby Data Layer from{" "}
+          <a href="https://www.crowdcast.io/raae">Crowdcast</a> using
+          ScrapingBee.
+        </p>
+        <p>
+          Watch us code live with ScrapingBee co-founder{" "}
+          <a href="https://twitter.com/PierreDeWulf">Pierre de Wulf</a> on{" "}
+          <a href="https://youtu.be/MjcYzjYIFuI">YouTube</a>.
+        </p>
       </header>
     </main>
   );
