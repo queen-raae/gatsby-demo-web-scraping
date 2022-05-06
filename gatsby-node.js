@@ -1,24 +1,27 @@
 const axios = require("axios");
 
-exports.sourceNodes = async (gatsbyUtils) => {
-  const { actions, createNodeId, createContentDigest, reporter } = gatsbyUtils;
-  const { createNode } = actions;
-
+const scrapeCrowdcast = async () => {
   try {
-    reporter.info("SOURCE CROWDCAST");
-
     const { data } = await axios.get("https://app.scrapingbee.com/api/v1", {
       params: {
         api_key: process.env.SCRAPING_BEE_API_KEY,
         url: "https://www.crowdcast.io/raae",
-        wait_for: ".profile-name",
+        // Wait for there to be at least one
+        // non-empty .event-tile element
+        wait_for: ".event-tile",
         extract_rules: {
-          name: ".profile-name",
           webinars: {
+            // Lets create a list with data
+            // extracted from the .event-tile element
             selector: ".event-tile",
             type: "list",
+            // Each object in the list should
             output: {
+              // have a title lifted from
+              // the .event-tile__title element
               title: ".event-tile__title",
+              // and a path lifted from
+              // the href attribute of the first link element
               path: {
                 selector: "a",
                 output: "@href",
@@ -29,13 +32,29 @@ exports.sourceNodes = async (gatsbyUtils) => {
       },
     });
 
-    for (webinar of data.webinars) {
+    return data;
+  } catch (error) {
+    throw new Error("ScrapingBee Error: " + error.message, { cause: error });
+  }
+};
+
+exports.sourceNodes = async (gatsbyUtils) => {
+  const { actions, createNodeId, createContentDigest, reporter } = gatsbyUtils;
+  const { createNode } = actions;
+
+  try {
+    reporter.info("SOURCE CROWDCAST >> Begin");
+
+    const data = await scrapeCrowdcast();
+    console.log("DATA", data);
+
+    for (const webinar of data.webinars) {
       reporter.info("Create CrowdcastWebinar for " + webinar.path);
 
       createNode({
         id: createNodeId(webinar.path),
         title: webinar.title,
-        url: "https://www.crowdcast.io/" + webinar.path,
+        url: "https://www.crowdcast.io" + webinar.path,
         rawScrape: webinar,
         internal: {
           type: `CrowdcastWebinar`,
@@ -46,6 +65,6 @@ exports.sourceNodes = async (gatsbyUtils) => {
       });
     }
   } catch (error) {
-    reporter.info("SOURCE CROWDCAST Failed" + error.message);
+    reporter.warn("SOURCE CROWDCAST >>> Failed >>> " + error.message);
   }
 };
