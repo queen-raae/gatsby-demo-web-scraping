@@ -26,6 +26,10 @@ const scrapeCrowdcast = async () => {
                 selector: "a",
                 output: "@href",
               },
+              style: {
+                selector: ".hero",
+                output: "@style",
+              },
             },
           },
         },
@@ -46,15 +50,24 @@ exports.sourceNodes = async (gatsbyUtils) => {
     reporter.info("SOURCE CROWDCAST >> Begin");
 
     const data = await scrapeCrowdcast();
-    console.log("DATA", data);
 
     for (const webinar of data.webinars) {
-      reporter.info("Create CrowdcastWebinar for " + webinar.path);
+      reporter.info("Create CrowdcastWebinar for " + webinar.title);
+
+      // Clean out the search params
+      let url = new URL("https://www.crowdcast.io" + webinar.path);
+      url = url.origin + url.pathname;
+
+      // Clean out the cover image src
+      const regex = new RegExp(/url\(\"(.*?)\"\)/g);
+      const result = regex.exec(webinar.style);
+      const coverSrc = result[1];
 
       createNode({
-        id: createNodeId(webinar.path),
+        id: createNodeId(url),
         title: webinar.title,
-        url: "https://www.crowdcast.io" + webinar.path,
+        url: url,
+        coverSrc: coverSrc,
         rawScrape: webinar,
         internal: {
           type: `CrowdcastWebinar`,
