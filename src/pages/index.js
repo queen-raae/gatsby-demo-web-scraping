@@ -1,6 +1,7 @@
 import React from "react";
+import { graphql } from "gatsby";
 
-const IndexPage = () => {
+const IndexPage = ({ data }) => {
   return (
     <main>
       <header>
@@ -24,8 +25,38 @@ const IndexPage = () => {
           <a href="https://youtu.be/MjcYzjYIFuI">YouTube</a>.
         </p>
       </header>
+
+      <section>
+        <header>
+          <h2>Webinars</h2>
+        </header>
+
+        {data.allCrowdcastWebinar.nodes.map(({ title, url, coverSrc }) => {
+          return (
+            <article key={url}>
+              <h3>{title}</h3>
+              <img src={coverSrc} />
+              <p>
+                <a href={url}>Go to webinar</a>
+              </p>
+            </article>
+          );
+        })}
+      </section>
     </main>
   );
 };
 
 export default IndexPage;
+
+export const query = graphql`
+  {
+    allCrowdcastWebinar {
+      nodes {
+        title
+        url
+        coverSrc
+      }
+    }
+  }
+`;
