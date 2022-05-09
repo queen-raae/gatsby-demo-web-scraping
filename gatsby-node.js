@@ -51,10 +51,15 @@ exports.sourceNodes = async (gatsbyUtils) => {
     for (const webinar of data.webinars) {
       reporter.info("Create CrowdcastWebinar for " + webinar.path);
 
+      // Clean out the search params
+      let url = new URL("https://www.crowdcast.io" + webinar.path);
+      url = url.origin + url.pathname;
+
       createNode({
         id: createNodeId(webinar.path),
         title: webinar.title,
-        url: "https://www.crowdcast.io" + webinar.path,
+        // Clean out the search params
+        url: url,
         rawScrape: webinar,
         internal: {
           type: `CrowdcastWebinar`,
