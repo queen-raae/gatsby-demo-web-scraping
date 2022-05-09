@@ -54,14 +54,17 @@ exports.sourceNodes = async (gatsbyUtils) => {
     for (const webinar of data.webinars) {
       reporter.info("Create CrowdcastWebinar for " + webinar.title);
 
-      // Clean out the search params
+      // Remove the search params
       let url = new URL("https://www.crowdcast.io" + webinar.path);
       url = url.origin + url.pathname;
 
-      // Clean out the cover image src
+      // Exctract the cover image src
       const regex = new RegExp(/url\(\"(.*?)\"\)/g);
       const result = regex.exec(webinar.style);
-      const coverSrc = result[1];
+
+      // Remove the cover image search params
+      let coverSrc = new URL(result[1]);
+      coverSrc = coverSrc.origin + coverSrc.pathname;
 
       createNode({
         id: createNodeId(url),
