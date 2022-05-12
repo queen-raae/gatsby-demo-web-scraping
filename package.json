@@ -17,6 +17,9 @@
     "@raae/gatsby-theme-queen": "^0.1.1",
     "axios": "0.27.2",
     "gatsby": "4.13.1",
+    "gatsby-plugin-image": "2.14.1",
+    "gatsby-plugin-sharp": "4.14.1",
+    "gatsby-transformer-sharp": "4.14.0",
     "react": "18.1.0",
     "react-dom": "18.1.0"
   }

@@ -26,6 +26,8 @@ const scrapeCrowdcast = async () => {
                 selector: "a",
                 output: "@href",
               },
+              // and a style lifted from
+              // the .hero element
               style: {
                 selector: ".hero",
                 output: "@style",
@@ -83,4 +85,44 @@ exports.sourceNodes = async (gatsbyUtils) => {
   } catch (error) {
     reporter.warn("SOURCE CROWDCAST >>> Failed >>> " + error.message);
   }
+};
+
+exports.onCreateNode = (gatsbyUtils) => {
+  const { actions, node, createNodeId } = gatsbyUtils;
+  const { createNode } = actions;
+
+  if (node.internal.type === "CrowdcastWebinar") {
+    // Create a node for each CrowdcastWebinar cover image
+    createNode({
+      id: createNodeId(node.coverSrc),
+      crowdcastUrl: node.url,
+      url: node.coverSrc,
+      filename: node.id + ".png",
+      mimeType: "image/png",
+      parent: node.id,
+      height: 630,
+      width: 1200,
+      internal: {
+        type: "CrowdcastTobbieThumbnail",
+        contentDigest: node.internal.contentDigest,
+      },
+    });
+  }
+};
+
+exports.createSchemaCustomization = ({ actions }) => {
+  actions.createTypes(`
+    type CrowdcastTobbieThumbnail implements Node & RemoteFile {
+      crowdcastUrl: String!
+    }
+    type CrowdcastWebinar implements Node {
+      url: String!
+      title: String!
+      coverSrc: String!
+      thumbnail: CrowdcastTobbieThumbnail @link(
+        from: "url"
+        by: "crowdcastUrl"
+      )
+    }
+  `);
 };

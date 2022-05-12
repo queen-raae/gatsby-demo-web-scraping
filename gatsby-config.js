@@ -3,5 +3,10 @@ require("dotenv").config({
 });
 
 module.exports = {
-  plugins: [`@raae/gatsby-theme-queen`],
+  plugins: [
+    `@raae/gatsby-theme-queen`,
+    `gatsby-plugin-image`,
+    `gatsby-plugin-sharp`,
+    `gatsby-transformer-sharp`,
+  ],
 };
