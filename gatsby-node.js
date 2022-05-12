@@ -84,3 +84,41 @@ exports.sourceNodes = async (gatsbyUtils) => {
     reporter.warn("SOURCE CROWDCAST >>> Failed >>> " + error.message);
   }
 };
+
+exports.onCreateNode = (gatsbyUtils) => {
+  const { actions, node, createNodeId } = gatsbyUtils;
+  const { createNode } = actions;
+
+  if (node.internal.type === "CrowdcastWebinar") {
+    createNode({
+      height: 630,
+      url: node.coverSrc,
+      mimeType: "image/png",
+      parent: node.id,
+
+      width: 1200,
+      id: createNodeId(node.coverSrc),
+      filename: node.id + ".png",
+      internal: {
+        type: "CrowdcastTobbieThumbnail",
+        contentDigest: node.internal.contentDigest,
+      },
+
+      crowdcastId: node.url,
+    });
+  }
+};
+
+exports.createSchemaCustomization = ({ actions, schema }) => {
+  actions.createTypes(
+    schema.buildObjectType({
+      name: `CrowdcastTobbieThumbnail`,
+      fields: {
+        // 🍓
+      },
+      interfaces: [`Node`, `RemoteFile`],
+    })
+  );
+};
+
+exports.onCreateDevServer = ({ app }) => {};
