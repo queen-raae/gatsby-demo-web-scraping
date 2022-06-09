@@ -1,5 +1,6 @@
 import React from "react";
 import { graphql } from "gatsby";
+import { GatsbyImage, getImage } from "gatsby-plugin-image";
 
 const IndexPage = ({ data }) => {
   return (
@@ -31,17 +32,20 @@ const IndexPage = ({ data }) => {
           <h2>Webinars</h2>
         </header>
 
-        {data.allCrowdcastWebinar.nodes.map(({ title, url, coverSrc }) => {
-          return (
-            <article key={url}>
-              <h3>{title}</h3>
-              <img src={coverSrc} />
-              <p>
-                <a href={url}>Go to webinar</a>
-              </p>
-            </article>
-          );
-        })}
+        {data.allCrowdcastWebinar.nodes.map(
+          ({ title, url, coverSrc, cover }) => {
+            const image = getImage(cover);
+            return (
+              <article key={url}>
+                <h3>{title}</h3>
+                <GatsbyImage image={image} />
+                <p>
+                  <a href={url}>Go to webinar</a>
+                </p>
+              </article>
+            );
+          }
+        )}
       </section>
     </main>
   );
@@ -56,6 +60,11 @@ export const query = graphql`
         title
         url
         coverSrc
+        cover {
+          childImageSharp {
+            gatsbyImageData(width: 300)
+          }
+        }
       }
     }
   }
